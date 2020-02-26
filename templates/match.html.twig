@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+
+    <title>{{ match.tournament }} || {{ match.homeTeam.name }} – {{ match.awayTeam.name }}</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>
+        Текстовая трансляция матча {{ match.homeTeam.name }} – {{ match.awayTeam.name }}
+    </h1>
+    {% if message %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card text-center mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm">
+                            {% set team = match.homeTeam %}
+                            <h3>{{ team.name }}</h3>
+                            <img src="{{ team.logo }}" alt="{{ team.name }}">
+                            {{ team.country }}
+                        </div>
+                        <div class="col-sm text-success font-weight-bold display-2">
+                            {{ match.homeTeam.goals }} : {{ match.awayTeam.goals }}
+                        </div>
+                        <div class="col-sm">
+                            {% set team = match.awayTeam %}
+                            <h3>{{ team.name }}</h3>
+                            <img src="{{ team.logo }}" alt="{{ team.name }}">
+                            {{ team.country }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="font-weight-bold">
+                                {{ match.tournament }}
+                            </div>
+                            <div>
+                                {{ match.dateTime|date('d.m.Y, H:i') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    Трансляция
+                </div>
+                <div class="card-body">
+                    {% for message in match.messages|reverse %}
+                        {% set interestingMessageTypes = [constant('App\\Entity\\Match::GOAL_MESSAGE_TYPE'), constant('App\\Entity\\Match::YELLOW_CARD_MESSAGE_TYPE'), constant('App\\Entity\\Match::RED_CARD_MESSAGE_TYPE'), constant('App\\Entity\\Match::DANGEROUS_MOMENT_MESSAGE_TYPE')] %}
+                        <div class="row mb-2 {{ message.type in interestingMessageTypes ? 'font-weight-bold' : '' }}">
+                            <div class="col-2">
+                                {{ message.minute }}’
+                            </div>
+                            <div class="col-1">
+                                {% if message.type == constant('App\\Entity\\Match::REPLACE_PLAYER_MESSAGE_TYPE') %}
+                                    <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/replacement.png">
+                                {% elseif message.type == constant('App\\Entity\\Match::GOAL_MESSAGE_TYPE') %}
+                                    <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/goal.png">
+                                {% elseif message.type == constant('App\\Entity\\Match::YELLOW_CARD_MESSAGE_TYPE') %}
+                                    <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/card.png">
+                                {% elseif message.type == constant('App\\Entity\\Match::RED_CARD_MESSAGE_TYPE') %}
+                                    <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/yellow_red.png">
+                                {% endif %}
+                            </div>
+                            <div class="col-9">
+                                {{ message.text }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% import _self as render %}
+            {{ render.renderTeamInfo(match.homeTeam) }}
+            {{ render.renderTeamInfo(match.awayTeam) }}
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+{% macro renderTeamInfo(team) %}
+    <div class="card mb-3">
+        <div class="card-header text-center">
+            <div>
+                <strong>{{ team.name }}</strong>
+                {{ team.country }}
+            </div>
+            <div>
+                <small>{{ team.coach }}</small>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Имя</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in team.players %}
+                    <tr>
+                        <td>
+                            {{ player.number }}
+                        </td>
+                        <td>
+                            {{ player.name }}
+                        </td>
+                        <td>
+                            {{ player.playTime }}’
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endmacro %}
