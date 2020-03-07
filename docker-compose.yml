@@ -3,7 +3,8 @@ version: "3.7"
 services:
   php:
     container_name: football_php
-    image: php:7.4.3-fpm
+    build:
+      context: ./.docker/php
     working_dir: /code
     volumes:
       - "./:/code"
