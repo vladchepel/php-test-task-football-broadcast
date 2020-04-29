@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
+            crossorigin="anonymous">
 
     <title>{{ match.tournament }} || {{ match.homeTeam.name }} – {{ match.awayTeam.name }}</title>
 </head>
@@ -111,6 +111,7 @@
                     <th>#</th>
                     <th>Имя</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -124,6 +125,19 @@
                         </td>
                         <td>
                             {{ player.playTime }}’
+                        </td>
+                        <td>
+                            {% if player.hasGoals %}
+                                <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/goal.png">
+                            {% endif %}
+
+                            {% if player.hasYellowCards %}
+                                {% if player.hasRedCard %}
+                                    <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/yellow_red.png">
+                                {% else %}
+                                    <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/card.png">
+                                {% endif %}
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
