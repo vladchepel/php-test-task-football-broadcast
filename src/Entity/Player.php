@@ -14,8 +14,9 @@ class Player
     private int $goals;
     private int $yellowCards;
     private bool $redCard;
+    private string $position;
 
-    public function __construct(int $number, string $name)
+    public function __construct(int $number, string $name, string $position)
     {
         $this->number = $number;
         $this->name = $name;
@@ -25,6 +26,7 @@ class Player
         $this->goals = 0;
         $this->yellowCards = 0;
         $this->redCard = 0;
+        $this->position = $position;
     }
 
     public function getNumber(): int
@@ -101,5 +103,15 @@ class Player
     public function hasRedCard(): bool
     {
         return $this->redCard > 0 || $this->yellowCards > 1;
+    }
+
+    public function setPosition(string $position): void
+    {
+        $this->position = $position;
+    }
+
+    public function getPosition(): string
+    {
+        return $this->position;
     }
 }
