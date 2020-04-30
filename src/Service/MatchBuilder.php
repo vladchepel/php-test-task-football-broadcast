@@ -21,6 +21,7 @@ class MatchBuilder
         $match = new Match($id, $dateTime, $tournament, $stadium, $homeTeam, $awayTeam);
 
         $this->processLogs($match, $logs);
+        $this->fillPositionsTotalTime($match);
 
         return $match;
     }
@@ -73,7 +74,7 @@ class MatchBuilder
         $teamInfo = $event['details']["team$teamNumber"];
         $players = [];
         foreach ($teamInfo['players'] as $playerInfo) {
-            $players[] = new Player($playerInfo['number'], $playerInfo['name']);
+            $players[] = new Player($playerInfo['number'], $playerInfo['name'], $playerInfo['position']);
         }
 
         return new Team($teamInfo['title'], $teamInfo['country'], $teamInfo['logo'], $players, $teamInfo['coach']);
@@ -195,5 +196,35 @@ class MatchBuilder
                 $match->getAwayTeam()->getName()
             )
         );
+    }
+
+    private function getTeamTotalTimeByPositions(Team $team): array
+    {
+        $result = [];
+
+        foreach ($team->getPlayers() as $player) {
+            $position = $player->getPosition();
+            $playerPlayTime = $player->getPlayTime();
+
+            if (!isset($result[$position])) {
+                $result[$position] = 0;
+            }
+
+            $result[$position] += $playerPlayTime;
+        }
+
+        return $result;
+    }
+
+    private function fillPositionsTotalTime(Match $match): void
+    {
+        $homePositionsTotalTime = $this->getTeamTotalTimeByPositions($match->getHomeTeam());
+        $awayPositionsTotalTime = $this->getTeamTotalTimeByPositions($match->getAwayTeam());
+
+        foreach ($homePositionsTotalTime as $position => $value) {
+            $awayPositionsTotalTime[$position] += $value;
+        }
+
+        $match->setPositionsTotalTime($awayPositionsTotalTime);
     }
 }
