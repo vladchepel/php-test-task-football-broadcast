@@ -20,6 +20,13 @@ class Match
         self::REPLACE_PLAYER_MESSAGE_TYPE,
     ];
 
+    private const POSITIONS_FULL_NAME = [
+        'В' => 'Вратарь',
+        'З' => 'Защитник',
+        'П' => 'Полузащитник',
+        'Н' => 'Нападающий'
+    ];
+
     private string $id;
     private \DateTime $date;
     private string $tournament;
@@ -27,6 +34,7 @@ class Match
     private Team $homeTeam;
     private Team $awayTeam;
     private array $messages;
+    private array $positionsTotalTime;
 
     public function __construct(string $id, \DateTime $date, string $tournament, Stadium $stadium, Team $homeTeam, Team $awayTeam)
     {
@@ -37,6 +45,7 @@ class Match
         $this->homeTeam = $homeTeam;
         $this->awayTeam = $awayTeam;
         $this->messages = [];
+        $this->positionsTotalTime = [];
     }
 
     public function getId(): string
@@ -83,6 +92,21 @@ class Match
             'text'   => $text,
             'type'   => $type,
         ];
+    }
+
+    public function getPositionsTotalTime(): array
+    {
+        return $this->positionsTotalTime;
+    }
+
+    public function setPositionsTotalTime(array $array): void
+    {
+        $this->positionsTotalTime = $array;
+    }
+
+    public function getPositionFullName(string $key): string
+    {
+        return self::POSITIONS_FULL_NAME[$key];
     }
 
     private function assertCorrectType(string $type): void
