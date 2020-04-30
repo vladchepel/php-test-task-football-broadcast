@@ -101,8 +101,8 @@ class MatchBuilder
                     break;
                 case 'finishPeriod':
                     if ($period === 2) {
-                        $this->goToBenchAllPlayers($match->getHomeTeam(), $minute);
-                        $this->goToBenchAllPlayers($match->getAwayTeam(), $minute);
+                        $this->goToBenchAllPlayers($match->getHomeTeam(), $minute + 1);
+                        $this->goToBenchAllPlayers($match->getAwayTeam(), $minute + 1);
                     }
                     break;
                 case 'replacePlayer':
