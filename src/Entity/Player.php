@@ -13,7 +13,7 @@ class Player
     private int $outMinute;
     private int $goals;
     private int $yellowCards;
-    private bool $redCard;
+    private int $redCard;
     private string $position;
 
     public function __construct(int $number, string $name, string $position)
